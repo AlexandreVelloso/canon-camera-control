@@ -25,7 +25,13 @@ def press_shutter_button(auto_focus=False):
         'Content-Type': 'application/json'
     }
     
-    requests.post(url=API_URL, headers=headers, data=json.dumps(data))    
+    try:
+        response = requests.post(url=API_URL, headers=headers, data=json.dumps(data))
+        print('[Press Shutter Button] OK')
+    except requests.exceptions.HTTPError as http_err:
+        print(f'[Press Shutter Button] HTTP Error status: {http_err}, message: {response.text}')
+    except requests.exceptions.RequestException as general_err:
+        print(f"[Press Shutter Button] General Error message: {general_err}")
 
 
 def release_shutter_button(auto_focus=False):
@@ -38,7 +44,13 @@ def release_shutter_button(auto_focus=False):
         'Content-Type': 'application/json'
     }
     
-    requests.post(url=API_URL, headers=headers, data=json.dumps(data))
+    try:
+        response = requests.post(url=API_URL, headers=headers, data=json.dumps(data))
+        print('[Release Shutter Button] OK')
+    except requests.exceptions.HTTPError as http_err:
+        print(f'[Release Shutter Button] HTTP Error status: {http_err}, message: {response.text}')
+    except requests.exceptions.RequestException as general_err:
+        print(f"[Release Shutter Button] General Error message: {general_err}")
 
 
 print('--- CONTINUOUS SHUTTER PRESS ---\n')
@@ -59,6 +71,9 @@ try:
         press_shutter_button()
         release_shutter_button()
         time.sleep(delay_in_seconds)
+        
+        if i < number_of_photos -1:
+            print('\n')
 
 except KeyboardInterrupt:
     print("\nProgram terminated by user.")
